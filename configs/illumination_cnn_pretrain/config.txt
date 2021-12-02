@@ -1,0 +1,16 @@
+latent_dim = 128
+
+learning_rate = 5e-4
+
+batch_size = 24
+epochs = 100
+steps_per_epoch = 10000
+viz_step = 500
+log_step = 100
+
+interpolation_samples = 5
+lambda_generator_loss = 5e-3
+lambda_cyclic_loss = 1e-6
+lambda_smoothness_loss = 1e-4
+lambda_reconstruction = 1
+lambda_embedding = 1e-4

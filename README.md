@@ -11,6 +11,15 @@ Implementation for Neural-PIL. A novel method which decomposes multiple images i
 ![](images/teaser.jpg)
 
 
+## Setup
+
+A conda environment is used for dependency management
+
+```
+conda env create -f environment.yml
+conda activate neuralpil
+```
+
 ## Running
 
 ```
@@ -35,31 +44,11 @@ Most setup is handled by configurations files located in [configs/neural_pil/](c
 
 #### Real-World
 
-Due to different configurations each scene has a specific set of commands
-
-**MotherChild**
-
 ```
---config configs/neural_pil/real_world.txt --spherify  --rwfactor 6 --near 2 --far 0.25
+--config configs/neural_pil/real_world.txt
 ```
 
-**Gnome**
-
-```
---config configs/neural_pil/real_world.txt --spherify --rwfactor 6
-```
-
-**EthiopianHead**
-
-```
---config configs/neural_pil/real_world.txt --spherify --single_env --rotating_object --rwfactor 6
-```
-
-**GoldCape**
-
-```
---config configs/neural_pil/real_world.txt --spherify --single_env --rwfactor 4
-```
+Often objects are captured in a spherical manner and the flag `--spherify` should be applied for those scenes.
 
 ## Datasets
 
@@ -83,7 +72,9 @@ poses_bounds.npy
 
 The `poses_bounds.npy` is generated from the [LLFF script](https://github.com/bmild/nerf#dont-have-poses).
 
+## Evaluation
 
+The [train_neural_pil.py](train_neural_pil.py) can be called with a `--render_only` flag and the `--config` flag pointing to the `args.txt` of the experiments folder.
 
 ## Citation
 

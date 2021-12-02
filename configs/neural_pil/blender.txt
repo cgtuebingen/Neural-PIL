@@ -1,0 +1,16 @@
+batch_size = 1024
+learning_rate = 1e-4
+lrate_decay = 400
+
+direct_rgb = False
+
+jitter_coords = True
+dataset_type = blender
+
+epochs = 400
+steps_per_epoch = 1000
+
+weights_epoch = 10
+validation_epoch = 5
+testset_epoch = 400
+video_epoch = 400

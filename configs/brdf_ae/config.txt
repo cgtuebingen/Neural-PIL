@@ -1,0 +1,17 @@
+batch_size = 256
+learning_rate = 1e-4
+images_per_batch = 16
+epochs = 20
+
+net_d = 3
+net_w = 32
+disc_w = 32
+disc_d = 3
+fourier_res = 8
+latent_dim = 4
+
+interpolation_samples = 64
+lambda_generator_loss = 0.01
+lambda_cyclic_loss = 1e-4
+lambda_smoothness_loss = 0.05
+lambda_distance_loss = 0

@@ -1,0 +1,23 @@
+num_random_roughness_samples = 8192
+
+latent_dim = 128
+
+net_width = 128
+net_depth = 3
+
+cond_frequency = 2
+cond_width = 32
+
+mapping_width = 128
+mapping_depth = 2
+
+single_offset = False
+
+learning_rate = 1e-4
+lrate_decay = 4000
+
+batch_size = 8
+epochs = 200
+steps_per_epoch = 20000
+viz_step = 1000
+log_step = 500
