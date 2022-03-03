@@ -30,6 +30,12 @@ def add_args(parser):
     )
     parser.add_argument("--lrate_decay", type=int, default=500)
 
+    parser.add_argument(
+        "--allow_cnn_training", 
+        help="Enables the CNN to be trained during the Neural-PIL training. This can lead to instabilities.", 
+        action="store_true"
+    )
+
     return parser
 
 
@@ -159,7 +165,8 @@ def main(args):
                             roughness_random,
                             targets_random,
                             optimizer,
-                            epoch >= args.epochs // 3,
+                            # CNN retraining can lead to instability. I would suggest disabling it
+                            epoch >= args.epochs // 3 if args.allow_cnn_training else False, 
                         ),
                     )
 
