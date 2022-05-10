@@ -358,16 +358,10 @@ def spherify_poses(poses, bds):
 
 
 def load_llff_data(
-    basedir,
-    factor=8,
-    recenter=True,
-    bd_factor=0.75,
-    spherify=False,
-    path_zflat=False,
+    basedir, factor=8, recenter=True, bd_factor=0.75, spherify=False, path_zflat=False,
 ):
     poses, bds, imgs, msks, ev100s = _load_data(
-        basedir,
-        factor=factor,
+        basedir, factor=factor,
     )  # factor=8 downsamples original imgs by 8x
     print("Loaded", basedir, bds.min(), bds.max())
 

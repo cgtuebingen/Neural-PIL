@@ -31,9 +31,9 @@ def add_args(parser):
     parser.add_argument("--lrate_decay", type=int, default=500)
 
     parser.add_argument(
-        "--allow_cnn_training", 
-        help="Enables the CNN to be trained during the Neural-PIL training. This can lead to instabilities.", 
-        action="store_true"
+        "--allow_cnn_training",
+        help="Enables the CNN to be trained during the Neural-PIL training. This can lead to instabilities.",
+        action="store_true",
     )
 
     return parser
@@ -57,9 +57,7 @@ def run_validation(val_df, illumination_model):
             level_recons = []
             for i in range(roughnesses.shape[1]):
                 e = illumination_model.illumination_network.eval_env_map(
-                    z,
-                    roughnesses[:, i : i + 1],
-                    env_map.shape[1],
+                    z, roughnesses[:, i : i + 1], env_map.shape[1],
                 )
                 level_recons.append(e)
 
@@ -91,10 +89,7 @@ def run_validation(val_df, illumination_model):
 def main(args):
     # Setup directories, logging etc.
     with train_utils.SetupDirectory(
-        args,
-        copy_files=True,
-        main_script=__file__,
-        copy_data="data/illumination",
+        args, copy_files=True, main_script=__file__, copy_data="data/illumination",
     ):
         strategy = (
             tf.distribute.get_strategy()
@@ -166,7 +161,9 @@ def main(args):
                             targets_random,
                             optimizer,
                             # CNN retraining can lead to instability. I would suggest disabling it
-                            epoch >= args.epochs // 3 if args.allow_cnn_training else False, 
+                            epoch >= args.epochs // 3
+                            if args.allow_cnn_training
+                            else False,
                         ),
                     )
 
@@ -182,8 +179,7 @@ def main(args):
                     ]
 
                     pbar.add(
-                        1,
-                        values=losses_for_pbar,
+                        1, values=losses_for_pbar,
                     )
 
                     with tf.summary.record_if(
@@ -216,8 +212,7 @@ def main(args):
                             cnn_stack = tf.concat([env1, cnn_recon], 1)
                             mlp_stack = tf.concat([env1, mlp_recon], 1)
                             hdr_to_tb(
-                                "reconstruction",
-                                tf.concat([cnn_stack, mlp_stack], 2),
+                                "reconstruction", tf.concat([cnn_stack, mlp_stack], 2),
                             )
 
                             tf.summary.histogram("env/gt", env1)

@@ -26,9 +26,7 @@ class EmbeddingStore(tf.keras.layers.Embedding):
     @tf.function
     def convert_noise_to_latent(self, noise):
         tf.debugging.assert_shapes(
-            [
-                (noise, ("N", self.latent_dim)),
-            ]
+            [(noise, ("N", self.latent_dim)),]
         )
         return (
             slightly_padded_tanh(noise * (self.latent_std[None, :] * 3))

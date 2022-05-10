@@ -42,12 +42,7 @@ class CoarseModel(tf.keras.Model):
         ]
         # Then add the main layers
         for _ in range(args.net_depth // 2):
-            main_net.append(
-                tf.keras.layers.Dense(
-                    args.net_width,
-                    activation="relu",
-                )
-            )
+            main_net.append(tf.keras.layers.Dense(args.net_width, activation="relu",))
         # Build network stack
         self.main_net_first = tf.keras.Sequential(main_net)
 
@@ -57,12 +52,7 @@ class CoarseModel(tf.keras.Model):
             ),
         ]
         for _ in range(args.net_depth // 2):
-            main_net.append(
-                tf.keras.layers.Dense(
-                    args.net_width,
-                    activation="relu",
-                )
-            )
+            main_net.append(tf.keras.layers.Dense(args.net_width, activation="relu",))
         self.main_net_second = tf.keras.Sequential(main_net)
 
         # Sigma is a own output not conditioned on the illumination
@@ -86,10 +76,7 @@ class CoarseModel(tf.keras.Model):
         self.bottle_neck_layer = tf.keras.Sequential(
             [
                 tf.keras.layers.InputLayer((args.net_width,)),
-                tf.keras.layers.Dense(
-                    args.net_width,
-                    activation="relu",
-                ),
+                tf.keras.layers.Dense(args.net_width, activation="relu",),
             ]
         )
         self.conditional_net = tf.keras.Sequential(
@@ -101,10 +88,7 @@ class CoarseModel(tf.keras.Model):
                         + self.conditional_embedding.get_output_dimensionality(),
                     )
                 ),
-                tf.keras.layers.Dense(
-                    args.net_width,
-                    activation="relu",
-                ),
+                tf.keras.layers.Dense(args.net_width, activation="relu",),
                 tf.keras.layers.Dense(3, activation="linear"),
             ]
         )
@@ -113,12 +97,9 @@ class CoarseModel(tf.keras.Model):
         self.num_gpu = max(1, get_num_gpus())
         self.global_batch_size = args.batch_size * self.num_gpu
         self.mse = multi_gpu_wrapper(
-            tf.keras.losses.MeanSquaredError,
-            self.global_batch_size,
+            tf.keras.losses.MeanSquaredError, self.global_batch_size,
         )
-        self.alpha_loss = segmentation_mask_loss(
-            self.global_batch_size,
-        )
+        self.alpha_loss = segmentation_mask_loss(self.global_batch_size,)
 
     def payload_to_parmeters(
         self, raymarched_payload: tf.Tensor
@@ -243,10 +224,7 @@ class CoarseModel(tf.keras.Model):
         )
 
         raw = self.call(
-            points,
-            illumination_context,
-            ray_directions,
-            randomized=randomized,
+            points, illumination_context, ray_directions, randomized=randomized,
         )
 
         sigma, payload_raw = split_sigma_and_payload(raw)
@@ -336,12 +314,7 @@ class FineModel(tf.keras.Model):
         ]
         # Then add the main layers
         for _ in range(args.net_depth // 2):
-            main_net.append(
-                tf.keras.layers.Dense(
-                    args.net_width,
-                    activation="relu",
-                )
-            )
+            main_net.append(tf.keras.layers.Dense(args.net_width, activation="relu",))
         # Build network stack
         self.main_net_first = tf.keras.Sequential(main_net)
 
@@ -351,12 +324,7 @@ class FineModel(tf.keras.Model):
             ),
         ]
         for _ in range(args.net_depth // 2):
-            main_net.append(
-                tf.keras.layers.Dense(
-                    args.net_width,
-                    activation="relu",
-                )
-            )
+            main_net.append(tf.keras.layers.Dense(args.net_width, activation="relu",))
         self.main_net_second = tf.keras.Sequential(main_net)
 
         # Build the BRDF decoder
@@ -419,13 +387,10 @@ class FineModel(tf.keras.Model):
         self.global_batch_size = args.batch_size * self.num_gpu
 
         self.mse = multi_gpu_wrapper(
-            tf.keras.losses.MeanSquaredError,
-            self.global_batch_size,
+            tf.keras.losses.MeanSquaredError, self.global_batch_size,
         )
         self.cosine_mse = cosine_weighted_mse(self.global_batch_size)
-        self.alpha_loss = segmentation_mask_loss(
-            self.global_batch_size,
-        )
+        self.alpha_loss = segmentation_mask_loss(self.global_batch_size,)
 
     def payload_to_parmeters(
         self, raymarched_payload: tf.Tensor
@@ -515,8 +480,7 @@ class FineModel(tf.keras.Model):
         # Evaluate the BRDF
         if not self.ablate_brdf_smae:
             brdf_embedding = payload[
-                ...,
-                start : start + self.brdf_decoder.latent_dim,
+                ..., start : start + self.brdf_decoder.latent_dim,
             ]
             start = start + self.brdf_decoder.latent_dim
 
@@ -528,10 +492,7 @@ class FineModel(tf.keras.Model):
             full_payload_list.append(brdf)
         else:
             full_payload_list.append(
-                payload[
-                    ...,
-                    start : start + 7,
-                ]
+                payload[..., start : start + 7,]
             )
             start = start + 7
 
@@ -653,8 +614,7 @@ class FineModel(tf.keras.Model):
 
         # Ensure the raymarched normal is actually normalized
         payload["normal"] = math_utils.white_background_compose(
-            math_utils.normalize(payload["normal"]),
-            payload["acc_alpha"][:, None],
+            math_utils.normalize(payload["normal"]), payload["acc_alpha"][:, None],
         )
 
         # First get the reflection direction
@@ -708,8 +668,7 @@ class FineModel(tf.keras.Model):
         payload["hdr_rgb"] = rgb
 
         payload["rgb"] = math_utils.white_background_compose(
-            self.camera_post_processing(rgb, ev100),
-            payload["acc_alpha"][..., None],
+            self.camera_post_processing(rgb, ev100), payload["acc_alpha"][..., None],
         )
 
         return (
@@ -782,10 +741,7 @@ class FineModel(tf.keras.Model):
         if self.direct_rgb:
             direct_img_loss = self.mse(target_masked, payload["direct_rgb"])
 
-        image_mse_loss = self.mse(
-            target_masked,
-            payload["rgb"],
-        )
+        image_mse_loss = self.mse(target_masked, payload["rgb"],)
 
         cos_theta = math_utils.dot(payload["normal"], view_vector)
         cos_theta = tf.stop_gradient(
@@ -793,7 +749,9 @@ class FineModel(tf.keras.Model):
         )  # Ensure loss in background is always weighted fully
         image_cosine_loss = self.cosine_mse(target_masked, payload["rgb"], cos_theta)
 
-        image_loss = image_mse_loss + image_cosine_loss * lambda_inverse_slow_fade_loss
+        image_loss = (
+            image_mse_loss  # + image_cosine_loss * lambda_inverse_slow_fade_loss
+        )
 
         diffuse_initial_loss = self.mse(target_masked, payload["diffuse"])
         roughness_initial_loss = self.mse(

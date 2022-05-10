@@ -84,9 +84,7 @@ def main(args):
             cur_step = 0
             with tqdm(total=epoch_length) as pbar:
                 for x in train_dataset:
-                    (x_recon, interpolated_samples, z, losses,) = model.train_step(
-                        x,
-                    )
+                    (x_recon, interpolated_samples, z, losses,) = model.train_step(x,)
 
                     if tf.summary.experimental.get_step() % stats_every == 0:
 

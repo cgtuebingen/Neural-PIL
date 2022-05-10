@@ -57,8 +57,7 @@ class NeuralPILModel(tf.keras.Model):
         self.global_batch_size = args.batch_size * self.num_gpu
 
         self.mse = multi_gpu_wrapper(
-            tf.keras.losses.MeanSquaredError,
-            self.global_batch_size,
+            tf.keras.losses.MeanSquaredError, self.global_batch_size,
         )
 
         self.cosine_similarity = multi_gpu_wrapper(
@@ -195,10 +194,7 @@ class NeuralPILModel(tf.keras.Model):
 
         def add_to_dict(to_add, main_dict):
             for k, v in to_add.items():
-                arr = main_dict.get(
-                    k,
-                    [],
-                )
+                arr = main_dict.get(k, [],)
                 arr.extend(v)
                 main_dict[k] = arr
 
@@ -304,8 +300,7 @@ class NeuralPILModel(tf.keras.Model):
 
                 wb_scene = math_utils.saturate(
                     self.fine_model.get_white_balance_under_illumination(
-                        illumination_context,
-                        ray_origins,
+                        illumination_context, ray_origins,
                     )
                     * illumination_factor
                     * math_utils.ev100_to_exp(ev100)
@@ -376,9 +371,7 @@ class NeuralPILModel(tf.keras.Model):
             with tf.name_scope("Prepare"):
                 is_background = alpha < 0.3
                 select_on_background = lambda x, y: tf.where(
-                    math_utils.repeat(is_background, tf.shape(x)[-1], -1),
-                    x,
-                    y,
+                    math_utils.repeat(is_background, tf.shape(x)[-1], -1), x, y,
                 )
 
             with tf.name_scope("Directions"):
@@ -398,12 +391,10 @@ class NeuralPILModel(tf.keras.Model):
                 )
 
                 reflection_direction = select_on_background(
-                    math_utils.normalize(ray_directions),
-                    reflection_direction,
+                    math_utils.normalize(ray_directions), reflection_direction,
                 )
                 specular_roughness = select_on_background(
-                    tf.zeros_like(roughness),
-                    roughness,
+                    tf.zeros_like(roughness), roughness,
                 )
 
             with tf.name_scope("Execute"):
@@ -420,25 +411,25 @@ class NeuralPILModel(tf.keras.Model):
                     with tf.name_scope("Illumination"):
                         # Illumination net expects a B, S, C shape.
                         # Add a fake one and remove b dim afterward
-                        diffuse_irradiance = (
-                            self.fine_model.illumination_net.call_multi_samples(
-                                reflection_direction[None, ...],
-                                tf.ones_like(  # Just sample with maximum roughness
-                                    roughness[None, ...]
-                                ),
-                                illumination_context,
-                            )[0]
-                        )
+                        diffuse_irradiance = self.fine_model.illumination_net.call_multi_samples(
+                            reflection_direction[None, ...],
+                            tf.ones_like(  # Just sample with maximum roughness
+                                roughness[None, ...]
+                            ),
+                            illumination_context,
+                        )[
+                            0
+                        ]
 
                         # Illumination net expects a B, S, C shape.
                         # Add a fake one and remove b dim afterward
-                        specular_irradiance = (
-                            self.fine_model.illumination_net.call_multi_samples(
-                                reflection_direction[None, ...],
-                                specular_roughness[None, ...],
-                                illumination_context,
-                            )[0]
-                        )
+                        specular_irradiance = self.fine_model.illumination_net.call_multi_samples(
+                            reflection_direction[None, ...],
+                            specular_roughness[None, ...],
+                            illumination_context,
+                        )[
+                            0
+                        ]
 
                     with tf.name_scope("Render"):
                         render = (

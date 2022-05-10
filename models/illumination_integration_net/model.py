@@ -56,9 +56,7 @@ class FiLMMappingNet(K.Model):
         self.latent_dim = args.latent_dim
 
         self.mapping_net = tf.keras.Sequential(
-            [
-                layers.InputLayer((self.latent_dim,), name="MappingNetwork/Input"),
-            ]
+            [layers.InputLayer((self.latent_dim,), name="MappingNetwork/Input"),]
             + [
                 layers.Dense(
                     args.mapping_width,
@@ -70,9 +68,7 @@ class FiLMMappingNet(K.Model):
             ]
             + [
                 layers.Dense(
-                    output_units * 2,
-                    activation="linear",
-                    name="MappingNetwork/Final",
+                    output_units * 2, activation="linear", name="MappingNetwork/Final",
                 ),
                 layers.Reshape((2, args.net_depth, units)),
             ]
@@ -132,9 +128,7 @@ class MainNetwork(K.Model):
             [
                 layers.InputLayer((input_size,), name="MainNetwork/OutputInput"),
                 layers.Dense(
-                    3,
-                    activation=to_hdr_activation,
-                    name="MainNetwork/Output",
+                    3, activation=to_hdr_activation, name="MainNetwork/Output",
                 ),
             ]
         )

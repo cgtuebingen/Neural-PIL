@@ -4,17 +4,13 @@ import numpy as np
 import tensorflow as tf
 
 import nn_utils.math_utils as math_utils
-from dataflow.illumination_integration.helper import (
-    getBilinearFromUv,
-)
+from dataflow.illumination_integration.helper import getBilinearFromUv
 from nn_utils.math_utils import shape_to_uv, uv_to_direction
 
 
 @tf.function
 def map_levels_to_samples(
-    num_roughness_0: int,
-    num_random_roughness: int,
-    data_levels: List[tf.Tensor],
+    num_roughness_0: int, num_random_roughness: int, data_levels: List[tf.Tensor],
 ):
     # Setup uvs
     env_shape = data_levels[0].shape
@@ -106,10 +102,7 @@ def full_map_samples(num_roughness_steps: int, data_levels: List[tf.Tensor]):
 @tf.function
 def random_uv_roughness_access(data_levels, uvs, roughness):
     tf.debugging.assert_shapes(
-        [
-            (uvs, ("S", 2)),
-            (roughness, ("S", 1)),
-        ]
+        [(uvs, ("S", 2)), (roughness, ("S", 1)),]
         + [(d, ("H%d" % i, "W%d" % i, 3)) for i, d in enumerate(data_levels)]
     )
     # data_levels: List[H, W, 3]
@@ -131,10 +124,7 @@ def random_uv_roughness_access(data_levels, uvs, roughness):
 @tf.function
 def interpolate_roughness_levels(samples, roughness):
     tf.debugging.assert_shapes(
-        [
-            (samples, ("M", "S", 3)),
-            (roughness, ("S", 1)),
-        ]
+        [(samples, ("M", "S", 3)), (roughness, ("S", 1)),]
     )
 
     # Setup the roughness interpolation
@@ -214,8 +204,7 @@ def random_sample_dataflow(
 
     if full_l0:
         ds = ds.map(
-            lambda *x: full_map_samples(5, x),
-            num_parallel_calls=tf.data.AUTOTUNE,
+            lambda *x: full_map_samples(5, x), num_parallel_calls=tf.data.AUTOTUNE,
         )
     else:
         ds = ds.map(

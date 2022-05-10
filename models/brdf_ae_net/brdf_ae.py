@@ -16,9 +16,7 @@ from utils.training_setup_utils import StateRestoration, StateRestorationItem
 
 class BrdfInterpolatingAutoEncoder(tf.keras.Model):
     def __init__(
-        self,
-        args,
-        **kwargs,
+        self, args, **kwargs,
     ):
         super(BrdfInterpolatingAutoEncoder, self).__init__(**kwargs)
 
@@ -97,8 +95,7 @@ class BrdfInterpolatingAutoEncoder(tf.keras.Model):
 
             # Smoothness loss
             interpolation_gradient = interpolTape.gradient(
-                interpolated_samples,
-                interpolation_values,
+                interpolated_samples, interpolation_values,
             )
             smoothness_loss = (
                 self.smoothness_loss(interpolation_gradient) / zfh.shape[0]

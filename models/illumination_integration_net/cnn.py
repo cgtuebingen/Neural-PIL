@@ -40,10 +40,7 @@ class CnnEncoder(tf.keras.Model):
 
         net.append(tf.keras.layers.Flatten())
         net.append(
-            tf.keras.layers.Dense(
-                self.latent_dim,
-                activation=embedding_activation,
-            )
+            tf.keras.layers.Dense(self.latent_dim, activation=embedding_activation,)
         )
 
         self.net = tf.keras.Sequential(net)
@@ -75,11 +72,7 @@ class CnnDecoder(tf.keras.Model):
             tf.keras.layers.InputLayer((input_units,)),
             tf.keras.layers.Reshape((1, 1, input_units)),
             tf.keras.layers.Conv2DTranspose(
-                initial_nf,
-                (1, 2),
-                strides=1,
-                padding="valid",
-                activation=activation,
+                initial_nf, (1, 2), strides=1, padding="valid", activation=activation,
             ),  # Restore aspect ratio
         ]
 
@@ -90,28 +83,18 @@ class CnnDecoder(tf.keras.Model):
             cur_nf = initial_nf - int((initial_nf / (upConvsNeeded + 3)) * (i + 1))
             net.append(
                 tf.keras.layers.Conv2DTranspose(
-                    cur_nf,
-                    4,
-                    strides=2,
-                    padding="same",
-                    activation=activation,
+                    cur_nf, 4, strides=2, padding="same", activation=activation,
                 )
             )
             net.append(
                 tf.keras.layers.Conv2D(
-                    cur_nf,
-                    3,
-                    padding="same",
-                    activation=activation,
+                    cur_nf, 3, padding="same", activation=activation,
                 )
             )
         # Final one:
         net.append(
             tf.keras.layers.Conv2D(
-                output_units,
-                1,
-                padding="same",
-                activation=to_hdr_activation,
+                output_units, 1, padding="same", activation=to_hdr_activation,
             )
         )
 
@@ -150,11 +133,7 @@ class CnnDiscriminator(tf.keras.Model):
                 )
             )
             net.append(
-                tf.keras.layers.Conv2D(
-                    discriminator_units,
-                    3,
-                    activation=activation,
-                )
+                tf.keras.layers.Conv2D(discriminator_units, 3, activation=activation,)
             )
 
         net.append(tf.keras.layers.Flatten())

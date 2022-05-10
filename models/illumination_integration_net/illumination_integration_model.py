@@ -45,8 +45,7 @@ class IlluminationNetwork(K.Model):
         self.global_batch_size = args.batch_size * get_num_gpus()
 
         self.male = multi_gpu_wrapper(
-            MeanAbsoluteLogarithmicError,
-            self.global_batch_size,
+            MeanAbsoluteLogarithmicError, self.global_batch_size,
         )
 
     def save(self, step):

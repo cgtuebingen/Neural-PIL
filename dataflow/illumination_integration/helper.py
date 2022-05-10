@@ -61,13 +61,7 @@ def get_mip_level(path):
 
 def get_all_env_map_paths(hdridir, env_name):
     return sorted(
-        glob(
-            os.path.join(
-                hdridir,
-                env_name + "_mip*.exr",
-            )
-        ),
-        key=get_mip_level,
+        glob(os.path.join(hdridir, env_name + "_mip*.exr",)), key=get_mip_level,
     )
 
 

@@ -1,7 +1,7 @@
 batch_size = 1024
 learning_rate = 1e-4
 lrate_decay = 400
-linear_disparity_sampling = True
+linear_disparity_sampling = False
 
 direct_rgb = False
 

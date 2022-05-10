@@ -4,9 +4,7 @@ import tensorflow as tf
 class AddCoords(tf.keras.layers.Layer):
     """Add coords to a tensor"""
 
-    def __init__(
-        self,
-    ):
+    def __init__(self,):
         super(AddCoords, self).__init__()
 
     def call(self, input_tensor):

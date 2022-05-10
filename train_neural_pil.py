@@ -32,16 +32,10 @@ def add_args(parser):
         help="render validation every x epochs",
     )
     parser.add_argument(
-        "--testset_epoch",
-        type=int,
-        default=100,
-        help="render testset every x epochs",
+        "--testset_epoch", type=int, default=100, help="render testset every x epochs",
     )
     parser.add_argument(
-        "--video_epoch",
-        type=int,
-        default=400,
-        help="render video every x epochs",
+        "--video_epoch", type=int, default=400, help="render video every x epochs",
     )
 
     parser.add_argument(
@@ -60,11 +54,7 @@ def add_args(parser):
 
 def parse_args():
     parser = add_args(
-        data.add_args(
-            NeuralPILModel.add_args(
-                train_utils.setup_parser(),
-            ),
-        ),
+        data.add_args(NeuralPILModel.add_args(train_utils.setup_parser(),),),
     )
     return train_utils.parse_args_file_without_nones(parser)
 
@@ -425,8 +415,7 @@ def main(args):
                         ]
 
                         pbar.add(
-                            1,
-                            values=losses_for_pbar,
+                            1, values=losses_for_pbar,
                         )
 
                         # Log to tensorboard
@@ -556,10 +545,7 @@ def main(args):
                     args.expname,
                     "video_{:06d}".format(tf.summary.experimental.get_step()),
                 )
-                video_img_dir = os.path.join(
-                    video_dir,
-                    "images",
-                )
+                video_img_dir = os.path.join(video_dir, "images",)
                 os.makedirs(video_img_dir, exist_ok=True)
 
                 render_video(
@@ -609,9 +595,7 @@ def render_video(
 
     video_latent = model.illumination_embedding_store(img_idx)
     illumination_factor_video = model.calculate_illumination_factor(
-        tf.convert_to_tensor([[0, 1, 0]], tf.float32),
-        ev100_video,
-        video_latent,
+        tf.convert_to_tensor([[0, 1, 0]], tf.float32), ev100_video, video_latent,
     )
     novel_video_latents = tf.convert_to_tensor(
         np.load("data/neural_pil/video_latents.npy"), tf.float32
@@ -653,7 +637,9 @@ def render_video(
 
         fine_result["rgb"] = math_utils.white_background_compose(
             math_utils.linear_to_srgb(
-                math_utils.uncharted2_filmic(fine_result["hdr_rgb"] * math_utils.ev100_to_exp(ev100_video))
+                math_utils.uncharted2_filmic(
+                    fine_result["hdr_rgb"] * math_utils.ev100_to_exp(ev100_video)
+                )
             ),
             fine_result["acc_alpha"][..., None]
             * (
@@ -696,8 +682,7 @@ def render_video(
             frame_latents.append(cur_latent)
 
             env_map = model.fine_model.illumination_net.eval_env_map(
-                tf.convert_to_tensor(cur_latent[None, ...], dtype=tf.float32),
-                float(0),
+                tf.convert_to_tensor(cur_latent[None, ...], dtype=tf.float32), float(0),
             )
             env_maps.append(env_map.numpy()[0])
 
@@ -739,13 +724,7 @@ def render_video(
                 [
                     (rays_o, ("H", "W", 3)),
                     (rays_d, ("H", "W", 3)),
-                    (
-                        latents,
-                        (
-                            1,
-                            model.fine_model.illumination_net.latent_units,
-                        ),
-                    ),
+                    (latents, (1, model.fine_model.illumination_net.latent_units,),),
                 ]
             )
 
@@ -866,17 +845,7 @@ def render_video(
 
 def render_test_example(dp, hwf, model, args, near, far, illumination_factor, strategy):
     with strategy.scope():
-        (
-            img_idx,
-            _,
-            _,
-            pose,
-            _,
-            ev100,
-            _,
-            _,
-            _,
-        ) = dp
+        (img_idx, _, _, pose, _, ev100, _, _, _,) = dp
 
         H, W, F = hwf
         rays_o, rays_d = get_full_image_eval_grid(H, W, F, pose[0])
